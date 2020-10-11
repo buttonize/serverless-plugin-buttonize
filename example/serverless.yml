@@ -1,15 +1,23 @@
 service: buttonize-plugin-example
 
+plugins:
+  - "../src/index"
+  # - serverless-plugin-buttonize
+
 provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
-  region: us-east-1
+  region: eu-central-1
+
+custom:
+  buttonize:
+    apiKey: abc
 
 functions:
   hello:
     handler: handler.hello
-#    events:
-#      - http:
-#          path: users/create
-#          method: get
+    events:
+      - buttonize:
+          path: users/create
+          method: get
