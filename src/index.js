@@ -1,20 +1,19 @@
 'use strict'
-const crypto = require('crypto')
-
-function generateLogicalName(functionName, event, config) {
-	const suffix = crypto
-		.createHash('md5')
-		.update(JSON.stringify({ event, config }))
-		.digest('hex')
-		.substr(0, 5)
-
-	return `Buttonize${functionName}${suffix}`
-}
 
 module.exports = class ServerlessButtonizePlugin {
 	constructor(serverless) {
 		const { provider, functions, custom } = serverless.service
 		const { configSchemaHandler } = serverless
+
+		const isDisabled = provider.name !== 'aws'
+
+		if (isDisabled) {
+			serverless.cli.log(
+				'serverless-plugin-buttonize supports only "aws" provider',
+				'Buttonize',
+				{ color: 'red' }
+			)
+		}
 
 		configSchemaHandler.defineCustomProperties.bind(configSchemaHandler)({
 			type: 'object',
@@ -51,30 +50,34 @@ module.exports = class ServerlessButtonizePlugin {
 
 		this.hooks = {
 			'before:package:finalize': () => {
-				serverless.cli.log('Decorating with Buttonize resources...')
+				if (isDisabled) {
+					return
+				}
 
+				serverless.cli.log('Decorating CloudFormation template...', 'Buttonize')
+
+				const getLambdaLogicalId = serverless.providers.aws.naming.getLambdaLogicalId.bind(
+					serverless.providers.aws.naming
+				)
 				const { buttonize: config } = custom
 
 				const customResources = Object.entries(functions).reduce(
 					(mAcc, [functionName, { events }]) =>
-						events.reduce((acc, { buttonize: event }) => {
-							const logicalName = generateLogicalName(
-								functionName,
-								event,
-								config
-							)
-							console.log(functionName, event.path, event.method, config.apiKey)
-							return {
+						events.reduce(
+							(acc, { buttonize: { path, method } }) => ({
 								...acc,
-								[logicalName]: {
+								[`Buttonize${getLambdaLogicalId(functionName)}`]: {
 									Type: 'Custom::Buttonize',
 									Properties: {
 										ServiceToken: 'buttonize-lambda-arn-here',
-										...event
+										ApiKey: config.apiKey,
+										path,
+										method
 									}
 								}
-							}
-						}, mAcc),
+							}),
+							mAcc
+						),
 					{}
 				)
 
