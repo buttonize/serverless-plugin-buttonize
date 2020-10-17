@@ -1,5 +1,7 @@
 'use strict'
 
+const { addCustomResourceToService } = require('./customResources')
+
 module.exports = class ServerlessButtonizePlugin {
 	constructor(serverless) {
 		const { provider, functions, custom } = serverless.service
@@ -23,6 +25,9 @@ module.exports = class ServerlessButtonizePlugin {
 					properties: {
 						apiKey: {
 							type: 'string'
+						},
+						logs: {
+							type: 'boolean'
 						}
 					},
 					required: ['apiKey']
@@ -49,15 +54,17 @@ module.exports = class ServerlessButtonizePlugin {
 		)
 
 		this.hooks = {
-			'before:package:finalize': () => {
+			'before:package:finalize': async () => {
 				if (isDisabled) {
 					return
 				}
 
+				const { aws: awsProvider } = serverless.providers
+
 				serverless.cli.log('Decorating CloudFormation template...', 'Buttonize')
 
-				const getLambdaLogicalId = serverless.providers.aws.naming.getLambdaLogicalId.bind(
-					serverless.providers.aws.naming
+				const getLambdaLogicalId = awsProvider.naming.getLambdaLogicalId.bind(
+					awsProvider.naming
 				)
 				const { buttonize: config } = custom
 
@@ -85,6 +92,8 @@ module.exports = class ServerlessButtonizePlugin {
 					provider.compiledCloudFormationTemplate.Resources,
 					customResources
 				)
+
+				await addCustomResourceToService(awsProvider, config.logs, [])
 			}
 		}
 	}

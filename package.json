@@ -22,14 +22,21 @@
 	"bugs": {
 		"url": "https://github.com/buttonize/serverless-plugin-buttonize/issues"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"fs-extra": "^9.0.1",
+		"lodash": "^4.17.20"
+	},
 	"devDependencies": {
+		"serverless": "^2.4.0",
 		"eslint": "^6.8.0",
 		"eslint-config-prettier": "^6.9.0",
 		"eslint-plugin-prettier": "^3.1.2",
 		"husky": "^4.3.0",
 		"lint-staged": "^10.4.0",
 		"prettier": "^1.19.1"
+	},
+	"peerDependencies": {
+		"serverless": ">=2.4.0"
 	},
 	"lint-staged": {
 		"{src,example}/**/*.js": [
