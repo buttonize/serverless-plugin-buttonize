@@ -1,6 +1,10 @@
 'use strict'
 
+const path = require('path')
 const { addCustomResourceToService } = require('./customResources')
+const {
+	uploadZipFile
+} = require('serverless/lib/plugins/aws/deploy/lib/uploadArtifacts')
 
 module.exports = class ServerlessButtonizePlugin {
 	constructor(serverless) {
@@ -76,7 +80,14 @@ module.exports = class ServerlessButtonizePlugin {
 								[`Buttonize${getLambdaLogicalId(functionName)}`]: {
 									Type: 'Custom::Buttonize',
 									Properties: {
-										ServiceToken: 'buttonize-lambda-arn-here',
+										ServiceToken: {
+											'Fn::GetAtt': [
+												awsProvider.naming.getLambdaLogicalId(
+													'custom-resource-buttonize'
+												),
+												'Arn'
+											]
+										},
 										ApiKey: config.apiKey,
 										path,
 										method
@@ -92,8 +103,26 @@ module.exports = class ServerlessButtonizePlugin {
 					provider.compiledCloudFormationTemplate.Resources,
 					customResources
 				)
-
+				serverless.cli.log('Packaging CustomResources...', 'Buttonize')
 				await addCustomResourceToService(awsProvider, config.logs, [])
+			},
+			'after:aws:deploy:deploy:uploadArtifacts': async () => {
+				const { aws: awsProvider } = serverless.providers
+
+				const artifactFilePath = path.join(
+					serverless.config.servicePath,
+					'.serverless',
+					'buttonize.zip'
+				)
+
+				if (serverless.utils.fileExistsSync(artifactFilePath)) {
+					serverless.cli.log('Uploading CustmoResources...', 'Buttonize')
+					return uploadZipFile.bind({
+						serverless,
+						provider: awsProvider,
+						bucketName: await awsProvider.getServerlessDeploymentBucketName()
+					})(artifactFilePath)
+				}
 			}
 		}
 	}

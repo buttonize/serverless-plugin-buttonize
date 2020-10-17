@@ -49,7 +49,7 @@ module.exports = memoize(() => {
 					npmCommand =>
 						new Promise((resolve, reject) =>
 							childProcess.exec(
-								`${npmCommand} install`,
+								`${npmCommand} install --production`,
 								{
 									cwd: tmpInstalledLambdaPath
 								},
