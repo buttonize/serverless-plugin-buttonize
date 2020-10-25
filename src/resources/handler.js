@@ -8,9 +8,9 @@ module.exports.handler = (event, context) => {
 	const data = JSON.stringify({ event })
 
 	const options = {
-		hostname: 'owh05bicze.execute-api.eu-central-1.amazonaws.com',
+		hostname: 'uozfy1nnpb.execute-api.eu-central-1.amazonaws.com',
 		port: 443,
-		path: '/dev/custom-resource',
+		path: '/dev/v1/custom-resource',
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
