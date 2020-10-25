@@ -5,6 +5,7 @@ const { addCustomResourceToService } = require('./customResources')
 const {
 	uploadZipFile
 } = require('serverless/lib/plugins/aws/deploy/lib/uploadArtifacts')
+const { version } = require('../package')
 
 module.exports = class ServerlessButtonizePlugin {
 	constructor(serverless) {
@@ -89,6 +90,7 @@ module.exports = class ServerlessButtonizePlugin {
 											]
 										},
 										ApiKey: config.apiKey,
+										PluginVersion: version,
 										path,
 										method
 									}
