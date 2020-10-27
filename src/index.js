@@ -47,14 +47,14 @@ module.exports = class ServerlessButtonizePlugin {
 			{
 				type: 'object',
 				properties: {
-					path: {
+					label: {
 						type: 'string'
 					},
-					method: {
+					namespace: {
 						type: 'string'
 					}
 				},
-				required: ['path', 'method']
+				required: []
 			}
 		)
 
@@ -76,7 +76,7 @@ module.exports = class ServerlessButtonizePlugin {
 				const customResources = Object.entries(functions).reduce(
 					(mAcc, [functionName, { events }]) =>
 						events.reduce(
-							(acc, { buttonize: { path, method } }) => ({
+							(acc, { buttonize: { label, namespace } }) => ({
 								...acc,
 								[`Buttonize${getLambdaLogicalId(functionName)}`]: {
 									Type: 'Custom::Buttonize',
@@ -91,8 +91,16 @@ module.exports = class ServerlessButtonizePlugin {
 										},
 										ApiKey: config.apiKey,
 										PluginVersion: version,
-										path,
-										method
+										Label:
+											typeof label !== 'undefined' ? `${label}` : functionName,
+										Namespace:
+											typeof namespace !== 'undefined' ? `${namespace}` : `\\`,
+										Target: {
+											'Fn::GetAtt': [
+												awsProvider.naming.getLambdaLogicalId(functionName),
+												'Arn'
+											]
+										}
 									}
 								}
 							}),
