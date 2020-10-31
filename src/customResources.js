@@ -176,23 +176,17 @@ function addCustomResourceToService(
 				functionName
 			)
 			customResourceFunction.DependsOn.push(customResourceLogGroupLogicalId)
-			const resourcesLogGroup = {
+			Object.assign(Resources, {
 				[customResourceLogGroupLogicalId]: {
 					Type: 'AWS::Logs::LogGroup',
 					Properties: {
 						LogGroupName: awsProvider.naming.getLogGroupName(
 							absoluteFunctionName
-						)
+						),
+						RetentionInDays: awsProvider.getLogRetentionInDays()
 					}
 				}
-			}
-			const logRetentionInDays = awsProvider.getLogRetentionInDays()
-			if (logRetentionInDays) {
-				resourcesLogGroup[
-					customResourceLogGroupLogicalId
-				].Properties.RetentionInDays = logRetentionInDays
-			}
-			Object.assign(Resources, resourcesLogGroup)
+			})
 		}
 	})
 }
