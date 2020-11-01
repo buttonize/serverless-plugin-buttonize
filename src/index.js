@@ -76,9 +76,9 @@ module.exports = class ServerlessButtonizePlugin {
 				const customResources = Object.entries(functions).reduce(
 					(mAcc, [functionName, { events }]) =>
 						events.reduce(
-							(acc, { buttonize: { label, namespace } }) => ({
+							(acc, { buttonize: { label, namespace } }, index) => ({
 								...acc,
-								[`Buttonize${getLambdaLogicalId(functionName)}`]: {
+								[`Buttonize${getLambdaLogicalId(functionName)}${index}`]: {
 									Type: 'Custom::Buttonize',
 									Properties: {
 										ServiceToken: {

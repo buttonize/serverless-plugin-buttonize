@@ -18,8 +18,24 @@ custom:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: src/handler.hello
     events:
       - buttonize:
-          path: users/create
-          method: get
+          label: Call helloo
+      - buttonize:
+          label: Call helloo double
+      - buttonize:
+          label: Call helloo double
+          namespace: \b\c\d\
+  hello2:
+    handler: src/handler2.hello
+    events:
+      - buttonize:
+          label: Call he2
+          namespace: \a\
+      - buttonize:
+          label: Call he2
+          namespace: \b\
+      - buttonize:
+          label: Call he3
+          namespace: \b\c\
