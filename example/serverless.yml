@@ -1,0 +1,41 @@
+service: buttonize-plugin-example
+
+plugins:
+  - "../src/index"
+  # - serverless-plugin-buttonize
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-central-1
+  logRetentionInDays: 30
+
+custom:
+  buttonize:
+    apiKey: abc
+    logs: true
+
+functions:
+  hello:
+    handler: src/handler.hello
+    events:
+      - buttonize:
+          label: Call helloo
+      - buttonize:
+          label: Call helloo double
+      - buttonize:
+          label: Call helloo double
+          namespace: \b\c\d\
+  hello2:
+    handler: src/handler2.hello
+    events:
+      - buttonize:
+          label: Call he2
+          namespace: \a\
+      - buttonize:
+          label: Call he2
+          namespace: \b\
+      - buttonize:
+          label: Call he3
+          namespace: \b\c\

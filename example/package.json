@@ -1,0 +1,15 @@
+{
+	"name": "serverless-plugin-buttonize-example",
+	"version": "1.0.0",
+	"description": "Example usage of serverless-plugin-buttonize plugin",
+	"author": "Filip Pyrek <fpyrek@purple-technology.com>",
+	"main": "handler.js",
+	"scripts": {
+		"package": "serverless package",
+		"deploy": "serverless deploy",
+		"remove": "serverless remove"
+	},
+	"devDependencies": {
+		"serverless": "^2.4.0"
+	}
+}

@@ -1,0 +1,51 @@
+{
+	"name": "serverless-plugin-buttonize",
+	"version": "1.0.0",
+	"engines": {
+		"node": ">=12"
+	},
+	"author": "Filip Pyrek <fpyrek@purple-technology.com>",
+	"description": "Serverless Framework Plugin for using Buttonize in your project",
+	"license": "MIT",
+	"main": "src/index.js",
+	"scripts": {
+		"test:lint": "eslint ./{src,example}/**/*.js",
+		"test:lint:fix": "npm run test:lint -- --fix",
+		"version": "",
+		"postversion": "git push && git push --tags && npm publish --access public"
+	},
+	"homepage": "https://github.com/buttonize/serverless-plugin-buttonize#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/buttonize/serverless-plugin-buttonize.git"
+	},
+	"bugs": {
+		"url": "https://github.com/buttonize/serverless-plugin-buttonize/issues"
+	},
+	"dependencies": {
+		"fs-extra": "^9.0.1",
+		"lodash": "^4.17.20"
+	},
+	"devDependencies": {
+		"serverless": "^2.4.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.9.0",
+		"eslint-plugin-prettier": "^3.1.2",
+		"husky": "^4.3.0",
+		"lint-staged": "^10.4.0",
+		"prettier": "^1.19.1"
+	},
+	"peerDependencies": {
+		"serverless": ">=2.4.0"
+	},
+	"lint-staged": {
+		"{src,example}/**/*.js": [
+			"eslint"
+		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	}
+}
