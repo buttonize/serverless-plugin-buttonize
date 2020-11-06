@@ -8,4 +8,4 @@ example
 .nvmrc
 .prettierrc.js
 CONTRIBUTING.md
-
+src/resources/node_modules
