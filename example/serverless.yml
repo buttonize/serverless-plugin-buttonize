@@ -22,8 +22,13 @@ functions:
     events:
       - buttonize:
           label: Call helloo
+          type: FieldsInput
+          fields:
+            userId: ID of the user
+            action: Action to be performed
       - buttonize:
           label: Call helloo double
+          type: NoInput
       - buttonize:
           label: Call helloo double
           namespace: \b\c\d\

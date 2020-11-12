@@ -38,7 +38,8 @@ module.exports = class ServerlessButtonizePlugin {
 					required: ['apiKey']
 				}
 			},
-			required: ['buttonize']
+			required: ['buttonize'],
+			additionalProperties: false
 		})
 
 		configSchemaHandler.defineFunctionEvent.bind(configSchemaHandler)(
@@ -52,9 +53,39 @@ module.exports = class ServerlessButtonizePlugin {
 					},
 					namespace: {
 						type: 'string'
+					},
+					type: {
+						type: 'string',
+						enum: ['NoInput', 'FieldsInput']
+					},
+					fields: {
+						type: 'object'
 					}
 				},
-				required: []
+				oneOf: [
+					{
+						properties: {
+							type: {
+								type: 'string',
+								const: 'FieldsInput'
+							},
+							fields: {
+								type: 'object'
+							}
+						},
+						required: ['type', 'fields']
+					},
+					{
+						properties: {
+							type: {
+								type: 'string',
+								const: 'NoInput'
+							}
+						}
+					}
+				],
+				required: [],
+				additionalProperties: false
 			}
 		)
 
@@ -76,7 +107,11 @@ module.exports = class ServerlessButtonizePlugin {
 				const customResources = Object.entries(functions).reduce(
 					(mAcc, [functionName, { events }]) =>
 						events.reduce(
-							(acc, { buttonize: { label, namespace } }, index) => ({
+							(
+								acc,
+								{ buttonize: { label, namespace, type, fields } },
+								index
+							) => ({
 								...acc,
 								[`Buttonize${getLambdaLogicalId(functionName)}${index}`]: {
 									Type: 'Custom::Buttonize',
@@ -100,7 +135,13 @@ module.exports = class ServerlessButtonizePlugin {
 												awsProvider.naming.getLambdaLogicalId(functionName),
 												'Arn'
 											]
-										}
+										},
+										Type: typeof type !== 'undefined' ? `${type}` : `NoInput`,
+										...(type === 'FieldsInput'
+											? {
+													Fields: JSON.stringify(fields)
+											  }
+											: {})
 									}
 								}
 							}),
