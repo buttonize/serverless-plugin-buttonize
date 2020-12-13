@@ -5,12 +5,12 @@ const https = require('https')
 
 module.exports.handler = (event, context) => {
 	console.log(JSON.stringify(event))
-	const data = JSON.stringify({ event })
+	const data = JSON.stringify({ inputEvent: event })
 
 	const options = {
-		hostname: 'p1zznibfxg.execute-api.eu-central-1.amazonaws.com',
+		hostname: 'vjrld1shcc.execute-api.eu-central-1.amazonaws.com',
 		port: 443,
-		path: '/dev/v1/custom-resource',
+		path: '/master/v1/custom-resource',
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
