@@ -3,7 +3,7 @@ updates:
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: weekly
+    interval: monthly
     day: wednesday
     time: "08:00"
     timezone: Europe/Prague
@@ -11,3 +11,4 @@ updates:
   target-branch: master
   reviewers:
   - FilipPyrek
+  - fekecrad
